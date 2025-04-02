@@ -1,0 +1,92 @@
+<!-- navbar.html -->
+<div class="navbar">
+    <a href="index.html".html"><i class="fa fa-fw fa-home"></i> Home</a>
+    <a href="quantenphysik.html"><i class="fa fa-fw fa-book"></i> Quantenphysik</a>
+    <a href="kontakt.html"><i class="fa fa-fw fa-envelope"></i> Kontakt</a>
+    
+    <!-- Suchfunktion in Navbar -->
+    
+</div>
+
+<script>
+    function search() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let content = document.querySelector(".content");
+        if (!content) return;
+
+        // Vorherige Markierungen zurücksetzen
+        removeHighlights(content);
+
+        if (input === "") return;
+
+        let firstMatch = highlightText(content, input);
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
+
+    function highlightText(element, searchTerm) {
+        let firstMatch = null;
+
+        if (element.hasChildNodes()) {
+            element.childNodes.forEach(child => {
+                let match = highlightText(child, searchTerm);
+                if (!firstMatch) firstMatch = match;
+            });
+        } else if (element.nodeType === Text.TEXT_NODE) {
+            let text = element.nodeValue.toLowerCase();
+            let index = text.indexOf(searchTerm);
+
+            if (index !== -1) {
+                let span = document.createElement("span");
+                span.innerHTML = element.nodeValue.replace(
+                    new RegExp(searchTerm, "gi"),
+                    match => `<mark>${match}</mark>`
+                );
+                element.replaceWith(span);
+                firstMatch = span;
+            }
+        }
+        return firstMatch;
+    }
+
+    function removeHighlights(element) {
+        let marks = element.querySelectorAll("mark");
+        marks.forEach(mark => {
+            mark.replaceWith(document.createTextNode(mark.textContent));
+        });
+    }
+</script>
+
+<style>
+    .search-container {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-container input {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+
+    .search-container button {
+        background-color: #575757;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .search-container button:hover {
+        background-color: #777;
+    }
+
+    mark {
+        background-color: yellow;
+        font-weight: bold;
+    }
+</style>
